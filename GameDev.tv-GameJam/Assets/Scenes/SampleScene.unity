@@ -158,12 +158,12 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 3.5
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!61 &287318692
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -267,14 +267,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ec5e5d7de1a0744cb1df4bbdeedf961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  jumpPower: 5
+  speed: 7.5
+  jumpPower: 12.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
   wallLayer:
     serializedVersion: 2
     m_Bits: 128
+  canDoubleJump: 1
+  canWallJump: 1
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -494,7 +496,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1977691140}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 38181edb7b2dcb14e95c42a58e44ad15, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
