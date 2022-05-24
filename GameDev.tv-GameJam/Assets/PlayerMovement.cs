@@ -1,7 +1,7 @@
 using UnityEngine;
- 
+
 public class PlayerMovement : MonoBehaviour
-{ 
+{
     [SerializeField] private float speed;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
@@ -17,49 +17,54 @@ public class PlayerMovement : MonoBehaviour
     //private Animator anim;
     [SerializeField] private bool canDoubleJump = false;
     [SerializeField] private bool canWallJump = false;
+    [SerializeField] PlayerAttack attackScript;
 
-    
+
     private bool didDoubleJump = false;
-    
+
     private void Awake()
-    {   
+    {
         body = GetComponent<Rigidbody2D>();
         boxCollider = GetComponent<BoxCollider2D>();
         gravityScale = body.gravityScale;
         //anim = GetComponent<Animator>();
     }
- 
+
     private void Update()
     {
         horizontalInput = Input.GetAxis("Horizontal");
-        
-        //Directional for animation and for sign mathf
-        if (horizontalInput > 0.01f)
-        {
-            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x),  transform.localScale.y,  transform.localScale.z);
-        }
-        else if (horizontalInput < -0.01f)
-        {
-            transform.localScale = new Vector3(transform.localScale.x * -1,  transform.localScale.y,  transform.localScale.z);
-        }
 
-            if(canWallJump && onWall() && !isGrounded() && gripTime < 1.00f && WallCooldown < 0)
+        if (!attackScript.isPlayerAttacking())
+        {
+
+            //Directional for animation and for sign mathf
+            if (horizontalInput > 0.01f)
             {
-                body.velocity = Vector2.zero;
-                body.gravityScale = 0;
-                body.velocity = Vector2.zero;
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
-            else
+            else if (horizontalInput < -0.01f)
             {
-                if(isGrounded())
-                {
-                    gripTime = 0;
-                    timeToDoubleJump = 0;
-                }
-                body.gravityScale = gravityScale;
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x) * -1, transform.localScale.y, transform.localScale.z);
             }
 
-        if(JumpCooldown > 0.2f)
+        }
+        if (canWallJump && onWall() && !isGrounded() && gripTime < 1.00f && WallCooldown < 0)
+        {
+            body.velocity = Vector2.zero;
+            body.gravityScale = 0;
+            body.velocity = Vector2.zero;
+        }
+        else
+        {
+            if (isGrounded())
+            {
+                gripTime = 0;
+                timeToDoubleJump = 0;
+            }
+            body.gravityScale = gravityScale;
+        }
+
+        if (JumpCooldown > 0.2f)
         {
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
             if (Input.GetKeyDown(KeyCode.Space))
@@ -82,16 +87,16 @@ public class PlayerMovement : MonoBehaviour
         anim.SetBool("grounded", grounded);
         */
     }
- 
+
     private void Jump()
     {
-        if(isGrounded())
+        if (isGrounded())
         {
             didDoubleJump = false;
             body.velocity = new Vector2(body.velocity.x, jumpPower);
             //anim.SetTrigger("jump");
         }
-        else if(canWallJump && onWall() && !isGrounded())
+        else if (canWallJump && onWall() && !isGrounded())
         {
             /*
             if(horizontalInput == 0)
@@ -108,13 +113,13 @@ public class PlayerMovement : MonoBehaviour
             WallCooldown = 3.0f;
             JumpCooldown = 0;
         }
-        else if(canDoubleJump && !didDoubleJump && timeToDoubleJump > .25f && !onWall() && !isGrounded())
+        else if (canDoubleJump && !didDoubleJump && timeToDoubleJump > .25f && !onWall() && !isGrounded())
         {
             didDoubleJump = true;
             body.velocity = new Vector2(body.velocity.x, jumpPower * .8f);
         }
     }
- 
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
     }
@@ -123,12 +128,12 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
         return raycastHit.collider != null;
-    } 
+    }
 
     private bool onWall()
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null && WallCooldown < 0;
-    } 
+    }
 
 }
